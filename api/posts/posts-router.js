@@ -113,7 +113,9 @@ try{
     })
         }
         else{
-            await Post.update()
+           await Post.update(req.params.id,req.body)
+            const updateData =await Post.findById(req.params.id)
+            res.json(updateData)
         }
     } // else in içi burda bitiyor
     
@@ -125,5 +127,28 @@ try{
     }
 
 })
+
+router.get("/:id/comments", async (req,res)=>{
+    try{
+const data= await Post.findById(req.params.id)
+if(!data){
+    res.status(404).json({
+        message:"Girilen ID'li gönderi bulunamadı."
+    })
+}
+else{
+    const comment= await Post.findPostComments(req.params.id)
+    res.json(comment)
+}
+    }
+    catch (err){
+        res.status(500).json({
+            message: "Yorumlar bilgisi getirilemedi"
+        })
+    }
+})
+
+
+
 
 module.exports = router;
